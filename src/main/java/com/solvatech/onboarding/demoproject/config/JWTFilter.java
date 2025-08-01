@@ -37,11 +37,12 @@ public class JWTFilter extends OncePerRequestFilter {
             String jwt = authHeader.substring(7);
 
             if(jwt.isBlank()) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                        "Missing JWT token");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Missing JWT token");
+                return;
             } else {
                 try {
-                    String username = jwtUtil.validateTokenAndRetriveClaim(jwt);
+                    String username = jwtUtil.validateAccessTokenAndRetriveClaim(jwt);
                     UserDetails userDetails = personDetailService.loadUserByUsername(username);
 
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
@@ -50,8 +51,9 @@ public class JWTFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
                 } catch (JWTVerificationException e) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                            "Invalid JWT token");
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Access token expired");
+                    return;
                 }
             }
         }

@@ -3,7 +3,6 @@ package com.solvatech.onboarding.demoproject.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,25 +19,51 @@ public class JWTUtil {
     @Value("${JWT_SECRET}")
     public String jwtSecret;
 
-    public String generateToken(String username){
-        Date expirationDate = Date.from(ZonedDateTime.now().plusMinutes(60).toInstant());
+    public String generateAccessToken(String username){
+        Date expirationDate = Date.from(ZonedDateTime.now().plusSeconds(15).toInstant());
 
         return JWT.create()
-                .withSubject("User details")
+                .withSubject("Access Token")
                 .withClaim("username", username)
                 .withIssuedAt(new Date())
                 .withIssuer("pokerface")
                 .withExpiresAt(expirationDate)
-                .sign(Algorithm.HMAC256("secret"));
+                .sign(Algorithm.HMAC256(jwtSecret));
     }
 
-    public String validateTokenAndRetriveClaim(String token) throws JWTVerificationException {
+    public String generateRefreshToken(String username){
+        Date expirationDate = Date.from(ZonedDateTime.now().plusDays(7).toInstant());
+
+        return JWT.create()
+                .withSubject("Refresh Token")
+                .withClaim("username", username)
+                .withIssuedAt(new Date())
+                .withIssuer("pokerface")
+                .withExpiresAt(expirationDate)
+                .sign(Algorithm.HMAC256(jwtSecret));
+    }
+
+    public String validateAccessTokenAndRetriveClaim(String token) throws JWTVerificationException {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(jwtSecret))
-                .withSubject("User details")
+                .withSubject("Access Token")
                 .withIssuer("pokerface")
                 .build();
 
         DecodedJWT jwt = verifier.verify(token);
         return jwt.getClaim("username").asString();
+    }
+
+    public String validateRefreshTokenAndRetriveClaim(String token) throws JWTVerificationException {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(jwtSecret))
+                .withSubject("Refresh Token")
+                .withIssuer("pokerface")
+                .build();
+
+        DecodedJWT jwt = verifier.verify(token);
+        return jwt.getClaim("username").asString();
+    }
+
+    public Date extractExpiration(String token) {
+        return JWT.decode(token).getExpiresAt();
     }
 }
