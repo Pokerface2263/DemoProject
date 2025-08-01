@@ -2,9 +2,7 @@ package com.solvatech.onboarding.demoproject.service;
 
 import com.solvatech.onboarding.demoproject.dto.PostDTO;
 import com.solvatech.onboarding.demoproject.dto.PostWithAuthorDTO;
-import com.solvatech.onboarding.demoproject.dto.UserResponseDTO;
 import com.solvatech.onboarding.demoproject.mapper.PostMapper;
-import com.solvatech.onboarding.demoproject.mapper.UserMapper;
 import com.solvatech.onboarding.demoproject.model.Post;
 import com.solvatech.onboarding.demoproject.model.User;
 import com.solvatech.onboarding.demoproject.repository.PostRepository;

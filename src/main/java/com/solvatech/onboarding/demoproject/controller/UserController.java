@@ -1,9 +1,7 @@
 package com.solvatech.onboarding.demoproject.controller;
 
 import com.solvatech.onboarding.demoproject.dto.UserResponseDTO;
-import com.solvatech.onboarding.demoproject.mapper.UserMapper;
 import com.solvatech.onboarding.demoproject.model.User;
-import com.solvatech.onboarding.demoproject.repository.UserRepository;
 import com.solvatech.onboarding.demoproject.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -32,11 +29,11 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping("/new")
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
-        User savedUser = userService.createUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
-    }
+//    @PostMapping("/new")
+//    public ResponseEntity<User> saveUser(@RequestBody User user) {
+//        User savedUser = userService.createUser(user);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+//    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {

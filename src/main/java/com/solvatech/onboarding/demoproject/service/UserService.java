@@ -1,17 +1,19 @@
 package com.solvatech.onboarding.demoproject.service;
 
+import com.solvatech.onboarding.demoproject.dto.UserDTO;
 import com.solvatech.onboarding.demoproject.dto.UserResponseDTO;
 import com.solvatech.onboarding.demoproject.mapper.UserMapper;
+import com.solvatech.onboarding.demoproject.mapper.UserResponseMapper;
 import com.solvatech.onboarding.demoproject.model.User;
 import com.solvatech.onboarding.demoproject.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -25,7 +27,7 @@ public class UserService {
 
     public ResponseEntity<UserResponseDTO> getUserById(Long id) {
         return userRepository.findById(id)
-                .map(UserMapper::mapToDTO)
+                .map(UserResponseMapper::mapToDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -33,13 +35,15 @@ public class UserService {
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<UserResponseDTO> users =  userRepository.findAll()
                 .stream()
-                .map(UserMapper::mapToDTO)
+                .map(UserResponseMapper::mapToDTO)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(users);
     }
 
-    public User createUser(User user) {
+    public User createUser(UserDTO userDTO) {
+        User user = UserMapper.mapToUser(userDTO);
+        user.setCreatedAt(LocalDateTime.now());
         return userRepository.save(user);
     }
 
@@ -56,7 +60,7 @@ public class UserService {
 
                     User savedUser = userRepository.save(currentUser);
                     System.out.println(savedUser.getFirstName());
-                    return UserMapper.mapToDTO(savedUser);
+                    return UserResponseMapper.mapToDTO(savedUser);
                 })
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

@@ -1,7 +1,5 @@
 package com.solvatech.onboarding.demoproject.dto;
 
-import com.solvatech.onboarding.demoproject.mapper.UserMapper;
-import com.solvatech.onboarding.demoproject.model.User;
 import lombok.Getter;
 import lombok.Setter;
 

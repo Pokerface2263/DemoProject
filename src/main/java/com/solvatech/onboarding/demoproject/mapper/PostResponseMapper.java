@@ -13,7 +13,7 @@ public class PostResponseMapper {
         dto.setCreatedAt(post.getCreatedAt());
 
         User user = post.getAuthor();
-        dto.setAuthor(UserMapper.mapToDTO(user));
+        dto.setAuthor(UserResponseMapper.mapToDTO(user));
 
         return dto;
     }
